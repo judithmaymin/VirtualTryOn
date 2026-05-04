@@ -3,155 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Try On | Compra sin dudas</title>
+    <title>Virtual Try On | Compra sin Devoluciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg-dark: #05070a;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: #f8fafc;
-            overflow-x: hidden;
-        }
-
-        .fashion-gradient {
-            background: radial-gradient(circle at top right, #0c1221, #05070a),
-                        radial-gradient(circle at bottom left, #0a1a2f, #05070a);
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .hero-glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-            z-index: -1;
-            filter: blur(80px);
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 40px -10px rgba(0, 242, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .scroll-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Particles Background */
-        #particles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.2;
-            animation: pulse var(--duration) infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.5); }
-        }
-
-        /* Demo Overlay Interface */
-        #demo-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: black;
-            z-index: 200;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .scanner-line {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            position: absolute;
-            box-shadow: 0 0 15px var(--primary);
-            animation: scan 4s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-
-        .holo-circle {
-            width: 350px;
-            height: 350px;
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 50%;
-            animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(0.5); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        input[type="range"] {
-            accent-color: var(--primary);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .modal.active { display: flex; }
-    </style>
+    <link rel="stylesheet" href="fichero.css">
 </head>
 <body class="fashion-gradient min-h-screen">
 
     <div id="particles"></div>
+
+    <div id="toast" class="toast">Acción completada</div>
+
+    <div id="auth-modal" class="modal auth-modal">
+        <div class="glass auth-card relative rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition text-white/50 hover:text-white" aria-label="Cerrar acceso">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+            </button>
+
+            <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em] mb-4">Área privada</p>
+            <h3 id="auth-title" class="text-3xl font-black text-white mb-3">Iniciar sesión</h3>
+            <p id="auth-subtitle" class="text-slate-400 text-sm leading-relaxed mb-8">Accede para poder probar ropa, guardar looks y generar tu avatar con IA.</p>
+
+            <div class="auth-tabs mb-6">
+                <button type="button" id="login-tab" class="auth-tab active" onclick="switchAuthMode('login')">Entrar</button>
+                <button type="button" id="register-tab" class="auth-tab" onclick="switchAuthMode('register')">Registrarme</button>
+            </div>
+
+            <form id="auth-form" class="space-y-5">
+                <label id="name-field" class="space-y-2 hidden">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Nombre</span>
+                    <input id="auth-name" class="ai-input w-full rounded-2xl px-4 py-3 text-sm" placeholder="Tu nombre">
+                </label>
+                <label class="space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Usuario</span>
+                    <input id="auth-username" class="ai-input w-full rounded-2xl px-4 py-3 text-sm" autocomplete="username" placeholder="ej: maria123" required>
+                </label>
+                <label class="space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Contraseña</span>
+                    <input id="auth-password" type="password" class="ai-input w-full rounded-2xl px-4 py-3 text-sm" autocomplete="current-password" placeholder="Mínimo 6 caracteres" required>
+                </label>
+                <p id="auth-error" class="auth-error hidden"></p>
+                <button id="auth-submit" type="submit" class="w-full bg-cyan-500 text-black py-4 rounded-2xl font-bold hover:bg-white transition">Iniciar sesión</button>
+            </form>
+
+            <div class="mt-6 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-slate-400 leading-relaxed">
+                Demo local: los usuarios se guardan en <b>localStorage</b>. Para una web real hay que sustituirlo por backend, base de datos y contraseñas cifradas.
+            </div>
+        </div>
+    </div>
+
+    <div id="download-modal" class="modal">
+        <div class="glass max-w-xl w-full rounded-[2.5rem] p-10 shadow-2xl relative">
+            <button onclick="closeDownloadModal()" class="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition text-white/50 hover:text-white" aria-label="Cerrar modal">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+            </button>
+            <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em] mb-4">Descarga disponible</p>
+            <h3 class="text-3xl font-black text-white mb-4">Elige tu plataforma</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-8">Simulación de descarga para la demo. Puedes cambiar estos botones por enlaces reales a App Store y Google Play.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <button onclick="simulateDownload('iOS')" class="bg-white text-black py-4 rounded-2xl font-bold hover:bg-cyan-400 transition">Descargar para iOS</button>
+                <button onclick="simulateDownload('Android')" class="glass py-4 rounded-2xl font-bold hover:bg-white/10 transition">Descargar para Android</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Demo Overlay Interface (Simulador de Probador) -->
     <div id="demo-overlay">
@@ -180,45 +94,50 @@
             <div class="w-8 h-8 bg-cyan-500 rounded-lg rotate-12"></div>
             VIRTUAL<span class="text-cyan-400">TRYON</span>
         </div>
-        <div class="hidden md:flex gap-10 text-xs font-bold opacity-70 uppercase tracking-[0.2em]">
-            <a href="#beneficios" class="hover:text-cyan-400 transition">Beneficios</a>
-            <a href="#probador" class="hover:text-cyan-400 transition">Colecciones</a>
-            <a href="#tecnologia" class="hover:text-cyan-400 transition">Tecnología</a>
+        <div class="hidden md:flex gap-10 text-xs font-bold opacity-70 uppercase tracking-[0.2em]" id="top-menu">
+            <button type="button" class="nav-link hover:text-cyan-400 transition" data-target="beneficios">Beneficios</button>
+            <button type="button" class="nav-link hover:text-cyan-400 transition" data-target="probador">Probador</button>
+            <button type="button" class="nav-link hover:text-cyan-400 transition" data-target="tecnologia">Tecnología</button>
         </div>
-        <button class="bg-white text-black px-7 py-2.5 rounded-full font-bold text-xs hover:bg-cyan-400 transition uppercase tracking-widest">
-            Descargar App
-        </button>
+        <div id="auth-nav" class="flex items-center gap-3">
+            <button type="button" id="download-app-btn" class="hidden sm:inline-flex bg-white/10 text-white px-5 py-2.5 rounded-full font-bold text-xs hover:bg-white/20 transition uppercase tracking-widest">App</button>
+            <button type="button" id="login-nav-btn" onclick="openAuthModal('login')" class="bg-white text-black px-7 py-2.5 rounded-full font-bold text-xs hover:bg-cyan-400 transition uppercase tracking-widest">Iniciar sesión</button>
+        </div>
     </nav>
 
     <!-- Hero Section -->
     <main class="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-32">
-        <div class="grid lg:grid-cols-2 gap-16 items-center">
-            
-            <div class="space-y-10">
-                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                    </span>
-                    Revolución Retail v4.0
+        <section id="inicio" class="tech-hero min-h-[calc(100vh-120px)] flex items-center">
+            <div class="grid lg:grid-cols-2 gap-16 items-center w-full">
+                <div class="space-y-7 hero-copy max-w-xl">
+                    <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                        <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span></span>
+                        IA Fashion Tech
+                    </div>
+
+                    <div class="space-y-5">
+                        <h1 class="text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight">
+                            Pruébate ropa <br>
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">antes de comprar.</span>
+                        </h1>
+                        <p class="text-lg text-slate-300 leading-relaxed max-w-xl font-light">
+                            Pega el enlace de cualquier prenda y genera una vista realista con IA.
+                        </p>
+                    </div>
+
+                    <div class="hero-simple-actions flex flex-wrap gap-4 pt-2">
+                        <button onclick="startProtectedTryOn()" class="bg-cyan-500 text-black px-8 py-4 rounded-2xl font-black flex items-center gap-2 transition-all transform hover:scale-105 hover:shadow-[0_0_30px_rgba(0,242,255,0.4)] active:scale-95">
+                            Probar ahora <span aria-hidden="true">→</span>
+                        </button>
+                        <button onclick="startDemo()" class="px-6 py-4 rounded-2xl font-bold text-white/70 hover:text-cyan-400 transition">
+                            Ver demo
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-500 uppercase tracking-[0.18em] font-bold">
+                        Desliza para abrir el probador universal
+                    </p>
                 </div>
-                <h1 class="text-6xl md:text-8xl font-extrabold leading-[1.05] tracking-tight">
-                    El mundo es <br>
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">Tu Probador.</span>
-                </h1>
-                <p class="text-xl text-slate-400 leading-relaxed max-w-lg font-light">
-                    Olvídate de las devoluciones y las dudas. Genera un holograma perfecto de tu cuerpo y pruébate cualquier prenda con un solo click, donde sea que estés.
-                </p>
-                <div class="flex flex-wrap gap-5 pt-4">
-                    <button onclick="document.getElementById('probador').scrollIntoView({behavior: 'smooth'})" class="bg-cyan-500 text-black px-10 py-5 rounded-2xl font-bold flex items-center gap-2 transition-all transform hover:scale-105 hover:shadow-[0_0_30px_rgba(0,242,255,0.4)] active:scale-95">
-                        Empezar a Probar
-                    </button>
-                    <button onclick="startDemo()" class="glass px-10 py-5 rounded-2xl font-bold hover:bg-white/5 transition flex items-center gap-2 border border-white/10">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-                        Ver Trailer Demo
-                    </button>
-                </div>
-            </div>
 
             <!-- Visualización Holográfica -->
             <div class="relative flex justify-center items-center">
@@ -227,17 +146,21 @@
                         <div class="w-full h-full bg-[#05070a] rounded-[2.9rem] flex flex-col items-center p-8 border border-white/5 relative">
                             <!-- Interfaz del App -->
                             <div class="w-full flex justify-between items-center mb-8">
-                                <div class="text-[10px] font-bold text-cyan-400 tracking-widest">HOLOGRAPHIC MODE</div>
+                                <div class="text-[10px] font-bold text-cyan-400 tracking-widest">MODO PROBADOR IA</div>
                                 <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                             </div>
 
                             <div class="relative w-full h-64 flex items-center justify-center">
                                 <div class="absolute inset-0 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
-                                <!-- Icono de Ropa / Modelo -->
-                                <svg class="w-40 h-40 text-cyan-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5">
-                                    <path d="M20 10V7l-3-3-5 2-5-2-3 3v3h16zM4 10v10l8 2 8-2V10M12 6v14" />
-                                </svg>
+                                <!-- Prenda flotante dentro del holograma -->
+                                <div class="hero-clothing-frame">
+                                    <img id="hero-clothing" src="" alt="Prenda seleccionada" class="hero-clothing-img">
+                                    <div class="hero-clothing-glow"></div>
+                                </div>
                                 <div class="absolute inset-0 border-2 border-cyan-500/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed"></div>
+                                <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 text-center">
+                                    <p id="hero-clothing-label" class="text-[10px] font-black text-cyan-300 uppercase tracking-[0.22em]">Camiseta base</p>
+                                </div>
                             </div>
 
                             <div class="mt-auto w-full space-y-6">
@@ -270,63 +193,50 @@
                 <div class="absolute w-[120%] h-[120%] border border-cyan-500/5 rounded-full"></div>
                 <div class="absolute w-[150%] h-[150%] border border-white/5 rounded-full opacity-50"></div>
             </div>
-        </div>
-
-        <!-- Probador Interactivo (Escenarios) -->
-        <section id="probador" class="mt-48 space-y-16">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div class="space-y-4">
-                    <h2 class="text-4xl md:text-6xl font-black text-white leading-tight">Tu Probador <br> <span class="text-cyan-400">Sin Límites.</span></h2>
-                    <p class="text-slate-400 max-w-xl">Elige un estilo y deja que nuestra IA genere tu avatar holográfico al instante.</p>
-                </div>
-                <div class="flex gap-4">
-                    <button class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition">←</button>
-                    <button class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition">→</button>
-                </div>
             </div>
+        </section>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Card 1 -->
-                <div onclick="openEditor('Urban Techwear', 'Ajuste aerodinámico con telas inteligentes repelentes al agua.', 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=800')" 
-                     class="group relative h-[500px] rounded-[2.5rem] overflow-hidden cursor-pointer feature-card border border-white/5">
-                    <img src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=800" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
-                        <span class="text-cyan-400 text-xs font-black uppercase tracking-widest mb-2">Streetwear</span>
-                        <h4 class="text-2xl font-bold mb-2 text-white">Urban Tech</h4>
-                        <button class="mt-4 bg-cyan-500 text-black py-3 rounded-xl text-xs font-bold transition-all opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">PROBAR AHORA</button>
+        <!-- Probador Universal -->
+        <section id="probador" class="mt-48">
+            <div class="tryon-general glass rounded-[3rem] p-8 md:p-14">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em]">Probador universal</p>
+                        <h2 class="text-4xl md:text-6xl font-black text-white leading-tight">
+                            Pruébate cualquier <span class="text-cyan-400">prenda online.</span>
+                        </h2>
+                        <p class="text-slate-400 text-lg leading-relaxed">
+                            Pega el enlace de la prenda que quieras probar, por ejemplo de Zara, Mango, H&M o cualquier tienda online.
+                            No necesitas elegir categoría: la IA usará el enlace como referencia.
+                        </p>
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div class="tryon-mini-step"><span>1</span><strong>Pega el enlace</strong><p>Copia la URL del producto.</p></div>
+                            <div class="tryon-mini-step"><span>2</span><strong>Ajusta tu avatar</strong><p>Elige cuerpo, pelo y ajuste.</p></div>
+                            <div class="tryon-mini-step"><span>3</span><strong>Genera la imagen</strong><p>Obtén tu resultado con IA.</p></div>
+                        </div>
+                        <button onclick="requireLoginOpenUniversalTryOn()" class="bg-cyan-500 text-black px-8 py-5 rounded-2xl font-black hover:bg-white transition shadow-xl">
+                            PROBAR UNA PRENDA AHORA →
+                        </button>
                     </div>
-                </div>
 
-                <!-- Card 2 -->
-                <div onclick="openEditor('Minimalist Noir', 'Elegancia pura con cortes láser y materiales premium sostenibles.', 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800')" 
-                     class="group relative h-[500px] rounded-[2.5rem] overflow-hidden cursor-pointer feature-card border border-white/5">
-                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
-                        <span class="text-purple-400 text-xs font-black uppercase tracking-widest mb-2">Elegance</span>
-                        <h4 class="text-2xl font-bold mb-2 text-white">Minimal Noir</h4>
-                        <button class="mt-4 bg-cyan-500 text-black py-3 rounded-xl text-xs font-bold transition-all opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">PROBAR AHORA</button>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div onclick="openEditor('Active Flow', 'Máximo rendimiento con compresión graduada y sensor térmico.', 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800')" 
-                     class="group relative h-[500px] rounded-[2.5rem] overflow-hidden cursor-pointer feature-card border border-white/5">
-                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
-                        <span class="text-green-400 text-xs font-black uppercase tracking-widest mb-2">Sport</span>
-                        <h4 class="text-2xl font-bold mb-2 text-white">Active Flow</h4>
-                        <button class="mt-4 bg-cyan-500 text-black py-3 rounded-xl text-xs font-bold transition-all opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">PROBAR AHORA</button>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div onclick="openEditor('Cyber Sunset', 'Inspirado en el neón, con efectos de bioluminiscencia en las costuras.', 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800')" 
-                     class="group relative h-[500px] rounded-[2.5rem] overflow-hidden cursor-pointer feature-card border border-white/5">
-                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
-                        <span class="text-pink-400 text-xs font-black uppercase tracking-widest mb-2">Futuristic</span>
-                        <h4 class="text-2xl font-bold mb-2 text-white">Cyber Sunset</h4>
-                        <button class="mt-4 bg-cyan-500 text-black py-3 rounded-xl text-xs font-bold transition-all opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">PROBAR AHORA</button>
+                    <div class="tryon-link-card">
+                        <div class="space-y-5">
+                            <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 flex items-center justify-center text-3xl">🔗</div>
+                            <div>
+                                <h3 class="text-2xl font-black text-white mb-2">Una sola interfaz para todo</h3>
+                                <p class="text-slate-400 text-sm leading-relaxed">
+                                    El usuario entra al probador, pega el enlace del producto y la IA interpreta la prenda desde esa referencia.
+                                </p>
+                            </div>
+                            <div class="fake-url-box">https://www.zara.com/es/...</div>
+                            <div class="flex flex-wrap gap-2 text-xs text-slate-400">
+                                <span class="tryon-tag">Zara</span>
+                                <span class="tryon-tag">Mango</span>
+                                <span class="tryon-tag">H&M</span>
+                                <span class="tryon-tag">Bershka</span>
+                                <span class="tryon-tag">Cualquier tienda</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -335,11 +245,18 @@
         <!-- Editor Modal -->
         <div id="outfit-editor" class="modal">
             <div class="glass max-w-4xl w-full rounded-[3rem] overflow-hidden flex flex-col md:flex-row shadow-2xl animate-[fadeIn_0.3s_ease-out]">
-                <!-- Modal Image -->
-                <div class="md:w-1/2 h-80 md:h-auto relative">
-                    <img id="modal-img" src="" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent md:hidden"></div>
-                    <div class="absolute top-0 left-0 w-full h-full pointer-events-none border-4 border-cyan-500/20 m-4 rounded-[2rem]"></div>
+                <!-- Modal Visual Universal -->
+                <div class="md:w-1/2 h-80 md:h-auto relative universal-modal-visual">
+                    <div class="absolute inset-0 flex items-center justify-center p-10">
+                        <div class="universal-link-visual">
+                            <div class="text-5xl mb-5">🔗</div>
+                            <p class="text-cyan-300 text-xs font-black uppercase tracking-[0.25em] mb-3">Enlace de prenda</p>
+                            <h4 class="text-3xl font-black text-white leading-tight">Pega cualquier producto online</h4>
+                            <p class="text-slate-400 text-sm mt-4 leading-relaxed">
+                                La referencia de la tienda se usará para generar el resultado.
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Modal Content -->
@@ -355,12 +272,25 @@
                     </div>
 
                     <div class="space-y-6">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <label class="space-y-2">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Tipo de avatar</span>
+                                <select id="avatar-body" class="ai-input w-full rounded-2xl px-4 py-3 text-sm">
+                                    <option value="atlético">Atlético</option><option value="delgado">Delgado</option><option value="curvy">Curvy</option><option value="robusto">Robusto</option>
+                                </select>
+                            </label>
+                            <label class="space-y-2">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Pelo</span>
+                                <input id="avatar-hair" class="ai-input w-full rounded-2xl px-4 py-3 text-sm" value="moreno corto" placeholder="Ej: rubio largo, rizado...">
+                            </label>
+                        </div>
+
                         <div class="space-y-3">
                             <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
                                 <span>Ajuste de Cintura</span>
                                 <span id="val-waist">Standard</span>
                             </div>
-                            <input type="range" min="0" max="100" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer">
+                            <input id="avatar-waist" type="range" min="0" max="100" value="50" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div class="space-y-3">
@@ -368,26 +298,80 @@
                                 <span>Simulación de Movimiento</span>
                                 <span id="val-motion">Estático</span>
                             </div>
-                            <input type="range" min="0" max="2" step="1" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer" 
-                                   oninput="const labels=['Estático', 'Caminando', 'Corriendo']; document.getElementById('val-motion').innerText = labels[this.value]">
+                            <input id="avatar-motion" type="range" min="0" max="2" step="1" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div class="space-y-4">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Variante Cromática</p>
                             <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full bg-cyan-500 cursor-pointer border-2 border-white ring-2 ring-cyan-500/50"></div>
-                                <div class="w-8 h-8 rounded-full bg-purple-600 cursor-pointer border-2 border-transparent hover:border-white transition"></div>
-                                <div class="w-8 h-8 rounded-full bg-zinc-800 cursor-pointer border-2 border-transparent hover:border-white transition"></div>
+                                <button type="button" class="color-dot active bg-cyan-500" data-color="cyan" aria-label="Color cian"></button>
+                                <button type="button" class="color-dot bg-purple-600" data-color="purple" aria-label="Color morado"></button>
+                                <button type="button" class="color-dot bg-zinc-800" data-color="black" aria-label="Color negro"></button>
                             </div>
                         </div>
                     </div>
 
-                    <button onclick="saveAndTry()" class="w-full bg-white text-black py-5 rounded-2xl font-bold transition shadow-xl hover:bg-cyan-400">
-                        GENERAR HOLOGRAMA 1:1
+                    <div class="space-y-3">
+                        <label class="space-y-2 block">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Enlace de referencia de la prenda <span class="text-cyan-300">*</span></span>
+                            <input id="garment-link" type="url" class="ai-input w-full rounded-2xl px-4 py-3 text-sm" placeholder="Ej: https://www.zara.com/es/..." required>
+                        </label>
+                        <div id="garment-link-preview" class="garment-link-preview hidden"></div>
+                        <p id="garment-link-error" class="auth-error hidden">Introduce un enlace válido de la prenda, por ejemplo de Zara.</p>
+                    </div>
+
+                    <button onclick="generateAIAvatar(event)" class="w-full bg-white text-black py-5 rounded-2xl font-bold transition shadow-xl hover:bg-cyan-400">
+                        GENERAR AVATAR CON IA
                     </button>
                 </div>
             </div>
         </div>
+
+
+
+        <div id="avatar-result-modal" class="modal">
+            <div class="glass max-w-5xl w-full rounded-[3rem] overflow-hidden grid md:grid-cols-2 shadow-2xl">
+                <div class="avatar-stage min-h-[520px] flex items-center justify-center p-8">
+                    <div id="avatar-loader" class="text-center space-y-5">
+                        <div class="ai-spinner mx-auto"></div>
+                        <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em]">IA generando foto realista</p>
+                        <h3 class="text-3xl font-black text-white">Combinando ropa, medidas y estilo...</h3>
+                    </div>
+                    <img id="generated-avatar-img" class="hidden max-h-[520px] w-full object-contain rounded-[2rem]" alt="Avatar fotorealista generado con IA">
+                </div>
+                <div class="p-10 md:p-14 space-y-8">
+                    <div class="flex justify-between items-start gap-6">
+                        <div>
+                            <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em] mb-3">Resultado IA</p>
+                            <h3 id="avatar-result-title" class="text-3xl font-black text-white italic">Foto generada</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mt-3">Modo demo local. Para IA real conecta tu backend en <code class="text-cyan-300">AI_AVATAR_ENDPOINT</code>.</p>
+                        </div>
+                        <button onclick="closeAvatarResult()" class="p-2 hover:bg-white/10 rounded-full transition text-white/50 hover:text-white" aria-label="Cerrar resultado">✕</button>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Prompt enviado a la IA</p>
+                        <textarea id="avatar-prompt" class="ai-input w-full min-h-40 rounded-2xl p-4 text-sm" readonly></textarea>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <button onclick="downloadAvatar()" class="bg-cyan-500 text-black py-4 rounded-2xl font-bold hover:bg-white transition">Descargar imagen</button>
+                        <button onclick="regenerateAvatar(event)" class="glass py-4 rounded-2xl font-bold hover:bg-white/10 transition">Regenerar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="tecnologia" class="mt-48 space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <p class="text-cyan-400 text-xs font-black uppercase tracking-[0.25em]">Tecnología</p>
+                <h2 class="text-4xl md:text-6xl font-black text-white leading-tight">IA, biometría y render realista.</h2>
+                <p class="text-slate-400 leading-relaxed">El sistema queda preparado para conectar un backend real de IA, guardar perfiles y bloquear el probador hasta que el usuario haya iniciado sesión.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <article class="glass p-10 rounded-[2.5rem] feature-card"><div class="text-4xl mb-6">🔐</div><h4 class="text-xl font-bold mb-3 text-white">Acceso privado</h4><p class="text-slate-500 text-sm leading-relaxed">Solo usuarios registrados pueden probar ropa y generar resultados.</p></article>
+                <article class="glass p-10 rounded-[2.5rem] feature-card"><div class="text-4xl mb-6">🧠</div><h4 class="text-xl font-bold mb-3 text-white">Prompt inteligente</h4><p class="text-slate-500 text-sm leading-relaxed">La ropa, el color y las características elegidas se convierten en instrucciones para la IA.</p></article>
+                <article class="glass p-10 rounded-[2.5rem] feature-card"><div class="text-4xl mb-6">👤</div><h4 class="text-xl font-bold mb-3 text-white">Perfil de usuario</h4><p class="text-slate-500 text-sm leading-relaxed">La sesión permite personalizar la experiencia y mostrar el nombre del usuario.</p></article>
+            </div>
+        </section>
 
         <!-- Benefits Section -->
         <section id="beneficios" class="mt-48 grid md:grid-cols-3 gap-8">
@@ -430,117 +414,6 @@
             <p class="text-slate-600 text-xs">© 2026 Virtual Try On Technologies. Redefiniendo la moda digital.</p>
         </div>
     </footer>
-
-    <script>
-        // Particle Generator
-        const container = document.getElementById('particles');
-        const particleCount = 60;
-        for (let i = 0; i < particleCount; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            const size = Math.random() * 4 + 2 + 'px';
-            p.style.width = size;
-            p.style.height = size;
-            p.style.top = Math.random() * 100 + '%';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.setProperty('--duration', (Math.random() * 4 + 3) + 's');
-            p.style.animationDelay = Math.random() * 5 + 's';
-            container.appendChild(p);
-        }
-
-        // Demo Simulation Logic
-        const demoOverlay = document.getElementById('demo-overlay');
-        const demoStatus = document.getElementById('demo-status');
-        const demoMainText = document.getElementById('demo-main-text');
-        const demoProgressBar = document.getElementById('demo-progress-bar');
-
-        const demoSteps = [
-            { status: "Mapeando entorno 3D...", text: "Ponte frente a la cámara...", progress: 20 },
-            { status: "Calibrando biometría...", text: "Detectando dimensiones...", progress: 45 },
-            { status: "Generando nube de puntos...", text: "Renderizando outfit...", progress: 75 },
-            { status: "Holograma sincronizado.", text: "¡Estás impecable!", progress: 100 }
-        ];
-
-        function startDemo() {
-            demoOverlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            let step = 0;
-
-            const interval = setInterval(() => {
-                if(step < demoSteps.length) {
-                    demoStatus.innerText = demoSteps[step].status;
-                    demoMainText.innerText = demoSteps[step].text;
-                    demoProgressBar.style.width = demoSteps[step].progress + '%';
-                    step++;
-                } else {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        demoOverlay.style.background = 'white';
-                        demoMainText.style.color = 'black';
-                        demoMainText.innerText = "ESCANEO COMPLETADO";
-                        setTimeout(stopDemo, 1500);
-                    }, 800);
-                }
-            }, 1200);
-        }
-
-        function stopDemo() {
-            demoOverlay.style.display = 'none';
-            demoOverlay.style.background = 'black';
-            demoMainText.style.color = 'white';
-            demoProgressBar.style.width = '0%';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Modal Logic
-        const modal = document.getElementById('outfit-editor');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-desc');
-        const modalImg = document.getElementById('modal-img');
-
-        function openEditor(title, desc, img) {
-            modalTitle.innerText = title;
-            modalDesc.innerText = desc;
-            modalImg.src = img;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeEditor() {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        function saveAndTry() {
-            const btn = event.target;
-            btn.innerText = "PROCESANDO AVATAR...";
-            btn.classList.add('animate-pulse');
-            
-            setTimeout(() => {
-                closeEditor();
-                btn.innerText = "GENERAR HOLOGRAMA 1:1";
-                btn.classList.remove('animate-pulse');
-                startDemo();
-            }, 1000);
-        }
-
-        // Scroll reveal animation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('section, main > div').forEach(el => {
-            el.classList.add('scroll-reveal');
-            observer.observe(el);
-        });
-
-        window.onclick = function(e) {
-            if (e.target == modal) closeEditor();
-        }
-    </script>
+    <script src="fichero.js"></script>
 </body>
 </html>
